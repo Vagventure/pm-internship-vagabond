@@ -1,8 +1,15 @@
 "use client"
 
+import { Manrope } from "next/font/google"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+})
 
 interface EducationDetailsData {
   currentLevel: string
@@ -38,15 +45,19 @@ export function EducationDetailsForm({ data, onUpdate }: EducationDetailsFormPro
 
   return (
     <div className="space-y-6">
+      {/* Current Education Level */}
       <div className="space-y-2">
         <Label htmlFor="currentLevel">Current Education Level *</Label>
-        <Select value={data.currentLevel} onValueChange={(value) => handleInputChange("currentLevel", value)}>
-          <SelectTrigger>
+        <Select
+          value={data.currentLevel}
+          onValueChange={(value) => handleInputChange("currentLevel", value)}
+        >
+          <SelectTrigger className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}>
             <SelectValue placeholder="Select your current education level" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className={manrope.className}>
             {educationLevels.map((level) => (
-              <SelectItem key={level} value={level}>
+              <SelectItem key={level} value={level} className={manrope.className}>
                 {level}
               </SelectItem>
             ))}
@@ -54,6 +65,7 @@ export function EducationDetailsForm({ data, onUpdate }: EducationDetailsFormPro
         </Select>
       </div>
 
+      {/* Institution */}
       <div className="space-y-2">
         <Label htmlFor="institution">Institution/College/University *</Label>
         <Input
@@ -62,9 +74,11 @@ export function EducationDetailsForm({ data, onUpdate }: EducationDetailsFormPro
           onChange={(e) => handleInputChange("institution", e.target.value)}
           placeholder="Enter your institution name"
           required
+          className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
         />
       </div>
 
+      {/* Course and Year */}
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="course">Course/Stream *</Label>
@@ -74,17 +88,21 @@ export function EducationDetailsForm({ data, onUpdate }: EducationDetailsFormPro
             onChange={(e) => handleInputChange("course", e.target.value)}
             placeholder="e.g., Computer Science, Mechanical Engineering"
             required
+            className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="year">Current Year *</Label>
-          <Select value={data.year} onValueChange={(value) => handleInputChange("year", value)}>
-            <SelectTrigger>
+          <Select
+            value={data.year}
+            onValueChange={(value) => handleInputChange("year", value)}
+          >
+            <SelectTrigger className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}>
               <SelectValue placeholder="Select current year" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className={manrope.className}>
               {years.map((year) => (
-                <SelectItem key={year} value={year}>
+                <SelectItem key={year} value={year} className={manrope.className}>
                   {year}
                 </SelectItem>
               ))}
@@ -93,6 +111,7 @@ export function EducationDetailsForm({ data, onUpdate }: EducationDetailsFormPro
         </div>
       </div>
 
+      {/* CGPA & Percentage */}
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="cgpa">CGPA (if applicable)</Label>
@@ -105,6 +124,7 @@ export function EducationDetailsForm({ data, onUpdate }: EducationDetailsFormPro
             step="0.01"
             min="0"
             max="10"
+            className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
           />
         </div>
         <div className="space-y-2">
@@ -117,13 +137,15 @@ export function EducationDetailsForm({ data, onUpdate }: EducationDetailsFormPro
             type="number"
             min="0"
             max="100"
+            className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
           />
         </div>
       </div>
 
-      <div className="bg-blue-50 p-4 rounded-lg">
-        <h4 className="font-medium text-blue-900 mb-2">Additional Information</h4>
-        <p className="text-sm text-blue-700">
+      {/* Additional Info */}
+      <div className="bg-orange-50 p-4 rounded-lg">
+        <h4 className="font-medium text-orange-700 mb-2">Additional Information</h4>
+        <p className="text-sm text-orange-600">
           Your educational background helps us match you with internships that align with your academic level and field
           of study. If you're currently pursuing a degree, select "Pursuing" and indicate your current year.
         </p>
