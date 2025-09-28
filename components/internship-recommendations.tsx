@@ -314,7 +314,7 @@ export function InternshipRecommendations({ formData }: InternshipRecommendation
               </div>
 
               <div className="flex gap-3 mt-6">
-                <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
+                <Button className="flex-1 bg-gray-800 hover:bg-gray-600">
                   Apply Now
                   <ExternalLink className="w-4 h-4 ml-2" />
                 </Button>
