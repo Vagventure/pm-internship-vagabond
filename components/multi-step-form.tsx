@@ -1,4 +1,10 @@
 "use client"
+import { Manrope } from "next/font/google"
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+})
 
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -126,7 +132,7 @@ export function MultiStepForm() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className={`${manrope.className} space-y-6`}>
       {/* Progress Bar */}
       <div className="space-y-2">
         <div className="flex justify-between text-sm text-gray-600">
@@ -140,27 +146,24 @@ export function MultiStepForm() {
 
       {/* Step Indicators */}
       <div className="flex justify-between">
-        {steps.map((step) => (
-          <div
-            key={step.id}
-            className={`flex flex-col items-center space-y-2 ${
-              step.id <= currentStep ? "text-blue-600" : "text-gray-400"
-            }`}
-          >
-            <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                step.id <= currentStep ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-400"
-              }`}
-            >
-              {step.id}
-            </div>
-            <div className="text-center">
-              <div className="text-sm font-medium">{step.title}</div>
-              <div className="text-xs text-gray-500 hidden sm:block">{step.description}</div>
-            </div>
-          </div>
-        ))}
+  {steps.map((step) => (
+    <div key={step.id} className="flex flex-col items-center space-y-2">
+      <div
+        className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+          step.id === currentStep ? "bg-gray-800 text-white" : "bg-gray-300 text-gray-700"
+        }`}
+      >
+        {step.id}
       </div>
+      <div className="text-center">
+        <div className={`text-sm font-medium ${step.id === currentStep ? "text-gray-700" : "text-gray-400"}`}>
+          {step.title}
+        </div>
+        <div className="text-xs text-gray-500 hidden sm:block">{step.description}</div>
+      </div>
+    </div>
+  ))}
+</div>
 
       {/* Form Content */}
       <Card>
@@ -182,7 +185,7 @@ export function MultiStepForm() {
             <ChevronLeft className="w-4 h-4 mr-2" />
             Previous
           </Button>
-          <Button onClick={nextStep} className="flex items-center bg-blue-600 hover:bg-blue-700">
+          <Button onClick={nextStep} className="flex items-center bg-gray-800 hover:bg-gray-600">
             {currentStep === steps.length - 1 ? "Get Recommendations" : "Next"}
             <ChevronRight className="w-4 h-4 ml-2" />
           </Button>
