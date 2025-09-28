@@ -3,6 +3,12 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Manrope } from "next/font/google"
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+})
 
 interface PersonalDetailsData {
   firstName: string
@@ -37,6 +43,7 @@ export function PersonalDetailsForm({ data, onUpdate }: PersonalDetailsFormProps
             onChange={(e) => handleInputChange("firstName", e.target.value)}
             placeholder="Enter your first name"
             required
+            className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
           />
         </div>
         <div className="space-y-2">
@@ -47,6 +54,7 @@ export function PersonalDetailsForm({ data, onUpdate }: PersonalDetailsFormProps
             onChange={(e) => handleInputChange("lastName", e.target.value)}
             placeholder="Enter your last name"
             required
+            className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
           />
         </div>
       </div>
@@ -61,6 +69,7 @@ export function PersonalDetailsForm({ data, onUpdate }: PersonalDetailsFormProps
             onChange={(e) => handleInputChange("email", e.target.value)}
             placeholder="Enter your email address"
             required
+            className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
           />
         </div>
         <div className="space-y-2">
@@ -72,6 +81,7 @@ export function PersonalDetailsForm({ data, onUpdate }: PersonalDetailsFormProps
             onChange={(e) => handleInputChange("phone", e.target.value)}
             placeholder="Enter your phone number"
             required
+            className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
           />
         </div>
       </div>
@@ -84,6 +94,7 @@ export function PersonalDetailsForm({ data, onUpdate }: PersonalDetailsFormProps
           value={data.dateOfBirth}
           onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
           required
+          className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
         />
       </div>
 
@@ -96,6 +107,7 @@ export function PersonalDetailsForm({ data, onUpdate }: PersonalDetailsFormProps
           placeholder="Enter your complete address"
           rows={3}
           required
+          className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
         />
       </div>
 
@@ -108,6 +120,7 @@ export function PersonalDetailsForm({ data, onUpdate }: PersonalDetailsFormProps
             onChange={(e) => handleInputChange("city", e.target.value)}
             placeholder="Enter your city"
             required
+            className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
           />
         </div>
         <div className="space-y-2">
@@ -118,6 +131,7 @@ export function PersonalDetailsForm({ data, onUpdate }: PersonalDetailsFormProps
             onChange={(e) => handleInputChange("state", e.target.value)}
             placeholder="Enter your state"
             required
+            className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
           />
         </div>
         <div className="space-y-2">
@@ -128,6 +142,7 @@ export function PersonalDetailsForm({ data, onUpdate }: PersonalDetailsFormProps
             onChange={(e) => handleInputChange("pincode", e.target.value)}
             placeholder="Enter pincode"
             required
+            className={`border-orange-500 focus:ring-orange-500 ${manrope.className}`}
           />
         </div>
       </div>

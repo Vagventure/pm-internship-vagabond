@@ -26,144 +26,123 @@ export function SkillsExperienceForm({ data, onUpdate }: SkillsExperienceFormPro
   const [newInterest, setNewInterest] = useState("")
   const [newLocation, setNewLocation] = useState("")
 
+  const suggestedSkills = [
+    "JavaScript", "Python", "Java", "React", "Node.js", "HTML/CSS", "SQL",
+    "Git", "Communication", "Leadership", "Problem Solving", "Team Work",
+    "Project Management", "Data Analysis", "Digital Marketing",
+    "Content Writing", "Graphic Design",
+  ]
+
+  const suggestedInterests = [
+    "Technology", "Finance", "Marketing", "Design", "Data Science",
+    "Artificial Intelligence", "Startups", "Consulting", "Research",
+    "Social Impact", "Healthcare", "Education",
+  ]
+
+  const suggestedLocations = [
+    "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai", "Pune",
+    "Kolkata", "Ahmedabad", "Gurgaon", "Noida", "Remote", "Any Location",
+  ]
+
+  // Toggle item in array
+  const toggleItem = (field: "skills" | "interests" | "preferredLocations", item: string) => {
+    if (data[field].includes(item)) {
+      onUpdate({ [field]: data[field].filter((i) => i !== item) })
+    } else {
+      onUpdate({ [field]: [...data[field], item] })
+    }
+  }
+
+  // Add custom input item
+  const addCustomItem = (
+    field: "skills" | "interests" | "preferredLocations",
+    value: string,
+    setValue: (val: string) => void
+  ) => {
+    if (!value.trim()) return
+    if (!data[field].includes(value.trim())) {
+      onUpdate({ [field]: [...data[field], value.trim()] })
+    }
+    setValue("")
+  }
+
   const handleInputChange = (field: keyof SkillsExperienceData, value: string) => {
     onUpdate({ [field]: value })
   }
 
-  const addSkill = () => {
-    if (newSkill.trim() && !data.skills.includes(newSkill.trim())) {
-      onUpdate({ skills: [...data.skills, newSkill.trim()] })
-      setNewSkill("")
-    }
-  }
+  // Generic section component
+  const renderSection = (
+    title: string,
+    placeholder: string,
+    field: "skills" | "interests" | "preferredLocations",
+    newValue: string,
+    setNewValue: (val: string) => void,
+    suggestedItems: string[]
+  ) => (
+    <div className="space-y-4">
+      <div>
+        <Label>{title} *</Label>
+        <p className="text-sm text-gray-600 mb-2">{`Select or type ${placeholder.toLowerCase()}`}</p>
+      </div>
 
-  const removeSkill = (skillToRemove: string) => {
-    onUpdate({ skills: data.skills.filter((skill) => skill !== skillToRemove) })
-  }
+      {/* Input field */}
+      <div className="flex gap-2">
+        <Input
+          value={newValue}
+          onChange={(e) => setNewValue(e.target.value)}
+          placeholder={`Enter ${placeholder}`}
+          onKeyDown={(e) => e.key === "Enter" && addCustomItem(field, newValue, setNewValue)}
+        />
+        <Button
+          type="button"
+          size="sm"
+          className="bg-orange-500 hover:bg-orange-600 text-white"
+          onClick={() => addCustomItem(field, newValue, setNewValue)}
+        >
+          <Plus className="w-4 h-4" />
+        </Button>
+      </div>
 
-  const addInterest = () => {
-    if (newInterest.trim() && !data.interests.includes(newInterest.trim())) {
-      onUpdate({ interests: [...data.interests, newInterest.trim()] })
-      setNewInterest("")
-    }
-  }
+      {/* Selected badges */}
+      {data[field].length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {data[field].map((item) => (
+            <Badge
+              key={item}
+              className="flex items-center gap-1 cursor-pointer bg-orange-500 text-white"
+              onClick={() => toggleItem(field, item)}
+            >
+              {item} <X className="w-3 h-3" />
+            </Badge>
+          ))}
+        </div>
+      )}
 
-  const removeInterest = (interestToRemove: string) => {
-    onUpdate({ interests: data.interests.filter((interest) => interest !== interestToRemove) })
-  }
-
-  const addLocation = () => {
-    if (newLocation.trim() && !data.preferredLocations.includes(newLocation.trim())) {
-      onUpdate({ preferredLocations: [...data.preferredLocations, newLocation.trim()] })
-      setNewLocation("")
-    }
-  }
-
-  const removeLocation = (locationToRemove: string) => {
-    onUpdate({ preferredLocations: data.preferredLocations.filter((location) => location !== locationToRemove) })
-  }
-
-  const suggestedSkills = [
-    "JavaScript",
-    "Python",
-    "Java",
-    "React",
-    "Node.js",
-    "HTML/CSS",
-    "SQL",
-    "Git",
-    "Communication",
-    "Leadership",
-    "Problem Solving",
-    "Team Work",
-    "Project Management",
-    "Data Analysis",
-    "Digital Marketing",
-    "Content Writing",
-    "Graphic Design",
-  ]
-
-  const suggestedInterests = [
-    "Technology",
-    "Finance",
-    "Marketing",
-    "Design",
-    "Data Science",
-    "Artificial Intelligence",
-    "Startups",
-    "Consulting",
-    "Research",
-    "Social Impact",
-    "Healthcare",
-    "Education",
-  ]
-
-  const suggestedLocations = [
-    "Mumbai",
-    "Delhi",
-    "Bangalore",
-    "Hyderabad",
-    "Chennai",
-    "Pune",
-    "Kolkata",
-    "Ahmedabad",
-    "Gurgaon",
-    "Noida",
-    "Remote",
-    "Any Location",
-  ]
+      {/* Suggested items */}
+      <div>
+        <p className="text-sm text-gray-600 mb-2 mt-2">Suggested {placeholder.toLowerCase()}:</p>
+        <div className="flex flex-wrap gap-2">
+          {suggestedItems
+            .filter((item) => !data[field].includes(item))
+            .slice(0, 10)
+            .map((item) => (
+              <Badge
+                key={item}
+                variant="outline"
+                className="cursor-pointer border-orange-500 text-orange-500 hover:bg-orange-50"
+                onClick={() => toggleItem(field, item)}
+              >
+                + {item}
+              </Badge>
+            ))}
+        </div>
+      </div>
+    </div>
+  )
 
   return (
     <div className="space-y-6">
-      {/* Skills Section */}
-      <div className="space-y-4">
-        <div>
-          <Label>Technical & Soft Skills *</Label>
-          <p className="text-sm text-gray-600 mb-2">Add skills that you possess or are learning</p>
-        </div>
-
-        <div className="flex gap-2">
-          <Input
-            value={newSkill}
-            onChange={(e) => setNewSkill(e.target.value)}
-            placeholder="Enter a skill"
-            onKeyPress={(e) => e.key === "Enter" && addSkill()}
-          />
-          <Button type="button" onClick={addSkill} size="sm">
-            <Plus className="w-4 h-4" />
-          </Button>
-        </div>
-
-        {data.skills.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {data.skills.map((skill) => (
-              <Badge key={skill} variant="secondary" className="flex items-center gap-1">
-                {skill}
-                <X className="w-3 h-3 cursor-pointer hover:text-red-500" onClick={() => removeSkill(skill)} />
-              </Badge>
-            ))}
-          </div>
-        )}
-
-        <div>
-          <p className="text-sm text-gray-600 mb-2">Suggested skills:</p>
-          <div className="flex flex-wrap gap-2">
-            {suggestedSkills
-              .filter((skill) => !data.skills.includes(skill))
-              .slice(0, 10)
-              .map((skill) => (
-                <Badge
-                  key={skill}
-                  variant="outline"
-                  className="cursor-pointer hover:bg-blue-50"
-                  onClick={() => onUpdate({ skills: [...data.skills, skill] })}
-                >
-                  + {skill}
-                </Badge>
-              ))}
-          </div>
-        </div>
-      </div>
+      {renderSection("Technical & Soft Skills", "a skill", "skills", newSkill, setNewSkill, suggestedSkills)}
 
       {/* Experience Section */}
       <div className="space-y-2">
@@ -189,105 +168,23 @@ export function SkillsExperienceForm({ data, onUpdate }: SkillsExperienceFormPro
         />
       </div>
 
-      {/* Interests Section */}
-      <div className="space-y-4">
-        <div>
-          <Label>Areas of Interest *</Label>
-          <p className="text-sm text-gray-600 mb-2">What fields or industries interest you?</p>
-        </div>
+      {renderSection(
+        "Areas of Interest",
+        "an area of interest",
+        "interests",
+        newInterest,
+        setNewInterest,
+        suggestedInterests
+      )}
 
-        <div className="flex gap-2">
-          <Input
-            value={newInterest}
-            onChange={(e) => setNewInterest(e.target.value)}
-            placeholder="Enter an area of interest"
-            onKeyPress={(e) => e.key === "Enter" && addInterest()}
-          />
-          <Button type="button" onClick={addInterest} size="sm">
-            <Plus className="w-4 h-4" />
-          </Button>
-        </div>
-
-        {data.interests.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {data.interests.map((interest) => (
-              <Badge key={interest} variant="secondary" className="flex items-center gap-1">
-                {interest}
-                <X className="w-3 h-3 cursor-pointer hover:text-red-500" onClick={() => removeInterest(interest)} />
-              </Badge>
-            ))}
-          </div>
-        )}
-
-        <div>
-          <p className="text-sm text-gray-600 mb-2">Suggested interests:</p>
-          <div className="flex flex-wrap gap-2">
-            {suggestedInterests
-              .filter((interest) => !data.interests.includes(interest))
-              .slice(0, 8)
-              .map((interest) => (
-                <Badge
-                  key={interest}
-                  variant="outline"
-                  className="cursor-pointer hover:bg-blue-50"
-                  onClick={() => onUpdate({ interests: [...data.interests, interest] })}
-                >
-                  + {interest}
-                </Badge>
-              ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Preferred Locations Section */}
-      <div className="space-y-4">
-        <div>
-          <Label>Preferred Locations *</Label>
-          <p className="text-sm text-gray-600 mb-2">Where would you like to do your internship?</p>
-        </div>
-
-        <div className="flex gap-2">
-          <Input
-            value={newLocation}
-            onChange={(e) => setNewLocation(e.target.value)}
-            placeholder="Enter a city or 'Remote'"
-            onKeyPress={(e) => e.key === "Enter" && addLocation()}
-          />
-          <Button type="button" onClick={addLocation} size="sm">
-            <Plus className="w-4 h-4" />
-          </Button>
-        </div>
-
-        {data.preferredLocations.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {data.preferredLocations.map((location) => (
-              <Badge key={location} variant="secondary" className="flex items-center gap-1">
-                {location}
-                <X className="w-3 h-3 cursor-pointer hover:text-red-500" onClick={() => removeLocation(location)} />
-              </Badge>
-            ))}
-          </div>
-        )}
-
-        <div>
-          <p className="text-sm text-gray-600 mb-2">Popular locations:</p>
-          <div className="flex flex-wrap gap-2">
-            {suggestedLocations
-              .filter((location) => !data.preferredLocations.includes(location))
-              .slice(0, 8)
-              .map((location) => (
-                <Badge
-                  key={location}
-                  variant="outline"
-                  className="cursor-pointer hover:bg-blue-50"
-                  onClick={() => onUpdate({ preferredLocations: [...data.preferredLocations, location] })}
-                >
-                  + {location}
-                </Badge>
-              ))}
-          </div>
-        </div>
-      </div>
+      {renderSection(
+        "Preferred Locations",
+        "a location",
+        "preferredLocations",
+        newLocation,
+        setNewLocation,
+        suggestedLocations
+      )}
 
       <div className="text-sm text-gray-600">
         <p>* Required fields</p>
