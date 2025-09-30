@@ -5,6 +5,7 @@ import { Khand } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Suspense } from "react";
 import "./globals.css";
+import ChatbotEmbed from "@/components/chatbot";
 
 const manrope = Manrope({
   subsets: ["latin"],

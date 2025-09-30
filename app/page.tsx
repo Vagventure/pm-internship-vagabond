@@ -1,3 +1,4 @@
+"use client"
 import { Header } from "@/components/header"
 import { EligibilitySection } from "@/components/eligibility-section"
 import { BenefitsSection } from "@/components/benefits-section"
@@ -8,6 +9,7 @@ import Image from "next/image"
 import DownloadHero from "@/components/download-hero"
 import { Partners } from "@/components/partners"
 import GoogleTranslateLoader from "@/components/gTranslate"
+import ChatbotEmbed from "@/components/chatbot"
 
 export default function HomePage() {
   return (
@@ -26,6 +28,7 @@ export default function HomePage() {
       <DownloadHero />
       <Partners />
       <Footer />
+      <ChatbotEmbed />
     </div>
     </>
   )
