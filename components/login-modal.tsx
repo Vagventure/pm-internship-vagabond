@@ -55,7 +55,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     }
 
   return (
-    <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center mt-20 z-50 p-4">
       <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 w-full max-w-md relative shadow-2xl">
         {/* Close button */}
         <button

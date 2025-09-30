@@ -121,7 +121,7 @@ export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
     };
 
     return (
-        <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center mt-24 z-50 p-4">
             {!showOtp ? (<div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 w-full max-w-md relative shadow-2xl">
                 {/* Close button */}
                 <button
@@ -234,10 +234,7 @@ export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
                         <strong>Note:</strong> User ID and One Time Password have been sent to the email address you provided.
                         Please use them to log in to your account.
                     </p>
-                    <p className="font-manrope-400">
-                        <strong>Note:</strong> Your account will be blocked for 15 minutes if you enter incorrect password in 3
-                        consecutive attempts. Please reset your password if your account is blocked.
-                    </p>
+                    
                 </div>
             </div>) : (
                 <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center z-50 p-4">

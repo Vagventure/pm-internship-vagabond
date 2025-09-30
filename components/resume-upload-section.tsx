@@ -33,7 +33,7 @@ export function ResumeUploadSection() {
         if (prev >= 100) {
           clearInterval(interval);
           setUploadComplete(true);
-          toast.success("File uploaded successfully");
+          // toast.success("File uploaded successfully");
           return 100;
         }
         return prev + 10;

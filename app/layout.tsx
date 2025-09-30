@@ -1,3 +1,4 @@
+
 import type React from "react";
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
@@ -8,14 +9,14 @@ import "./globals.css";
 
 // Your local login/register
 import ChatbotEmbed from "@/components/chatbot";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+// import {
+//   ClerkProvider,
+//   SignInButton,
+//   SignUpButton,
+//   SignedIn,
+//   SignedOut,
+//   UserButton,
+// } from "@clerk/nextjs";
 
 // Upstream session/auth
 import { Toaster } from "@/components/ui/sonner";
@@ -43,31 +44,18 @@ export const metadata: Metadata = {
   generator: "v0.app",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider
-      appearance={{
-        variables: {
-          fontFamily: "Manrope, sans-serif",
-          colorPrimary: "#ff7500",
-        },
-      }}
-    >
-      <SessionProvider>
-        <html lang="en">
-          <body className={`font-sans ${manrope.variable} ${khand.variable}`}>
-            <AuthProvider>
-              <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
-              <Analytics />
-              <Toaster />
-            </AuthProvider>
-          </body>
-        </html>
-      </SessionProvider>
-    </ClerkProvider>
+    // <SessionProvider>
+      <html lang="en">
+        <body className={`${manrope.variable} ${khand.variable}`}>
+          <AuthProvider>
+            {children}
+            <Analytics />
+            <Toaster />
+          </AuthProvider>
+        </body>
+      </html>
+
   );
 }
