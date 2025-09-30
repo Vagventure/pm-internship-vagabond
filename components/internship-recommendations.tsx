@@ -1,335 +1,342 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { MapPin, Clock, Building, Star, ExternalLink, Bookmark } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  MapPin,
+  Clock,
+  Building,
+  Star,
+  ExternalLink,
+  Bookmark,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface FormData {
   personalDetails: {
-    firstName: string
-    lastName: string
-    email: string
-    phone: string
-    dateOfBirth: string
-    address: string
-    city: string
-    state: string
-    pincode: string
-  }
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    dateOfBirth: string;
+    address: string;
+    city: string;
+    state: string;
+    pincode: string;
+  };
   education: {
-    currentLevel: string
-    institution: string
-    course: string
-    year: string
-    cgpa: string
-    percentage: string
-  }
+    currentLevel: string;
+    institution: string;
+    course: string;
+    year: string;
+    cgpa: string;
+    percentage: string;
+  };
   skillsExperience: {
-    skills: string[]
-    experience: string
-    projects: string
-    interests: string[]
-    preferredLocations: string[]
-  }
+    skills: string[];
+    experience: string;
+    projects: string;
+    interests: string[];
+    preferredLocations: string[];
+  };
+}
+
+interface MLRecommendation {
+  Role: string;
+  "Company Name": string;
+  Location_clean: string;
+  Stipend: string;
+  Duration: string;
+  Skills_text: string;
+  Match_Score: number;
+  Match_Percentage: number;
 }
 
 interface Internship {
-  id: string
-  title: string
-  company: string
-  location: string
-  duration: string
-  stipend: string
-  description: string
-  requirements: string[]
-  skills: string[]
-  type: string
-  rating: number
-  applicants: number
-  matchScore: number
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  duration: string;
+  stipend: string;
+  description: string;
+  requirements: string[];
+  skills: string[];
+  type: string;
+  rating: number;
+  applicants: number;
+  matchScore: number;
 }
 
 interface InternshipRecommendationsProps {
-  formData: FormData
+  formData: FormData;
 }
 
-export function InternshipRecommendations({ formData }: InternshipRecommendationsProps) {
-  const [recommendations, setRecommendations] = useState<Internship[]>([])
-  const [loading, setLoading] = useState(true)
-  const [savedInternships, setSavedInternships] = useState<Set<string>>(new Set())
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+export function InternshipRecommendations({
+  formData,
+}: InternshipRecommendationsProps) {
+  const [allocation, setAllocation] = useState<Internship | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
-    // Simulate API call to get recommendations
-    const generateRecommendations = () => {
-      setLoading(true)
+    fetchAllocation();
+  }, [formData]);
 
-      // Mock internship data - in real app, this would come from an API
-      const mockInternships: Internship[] = [
-        {
-          id: "1",
-          title: "Software Development Intern",
-          company: "TechCorp India",
-          location: "Bangalore",
-          duration: "6 months",
-          stipend: "₹25,000/month",
-          description:
-            "Work on cutting-edge web applications using React and Node.js. Gain hands-on experience in full-stack development.",
-          requirements: [
-            "Currently pursuing Computer Science",
-            "Basic knowledge of JavaScript",
-            "Problem-solving skills",
-          ],
-          skills: ["JavaScript", "React", "Node.js", "Git"],
-          type: "Technology",
-          rating: 4.5,
-          applicants: 150,
-          matchScore: 95,
+  const fetchAllocation = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const userSkills = formData.skillsExperience.skills.join(" ");
+      const userLocation =
+        formData.skillsExperience.preferredLocations.join(" ");
+      const preferredDuration = 3;
+      const preferredStipend = undefined;
+
+      const response = await fetch(`${API_BASE_URL}/api/recommend`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          id: "2",
-          title: "Digital Marketing Intern",
-          company: "Marketing Solutions Ltd",
-          location: "Mumbai",
-          duration: "4 months",
-          stipend: "₹18,000/month",
-          description:
-            "Learn digital marketing strategies, social media management, and content creation for various clients.",
-          requirements: ["Good communication skills", "Creative thinking", "Basic understanding of social media"],
-          skills: ["Digital Marketing", "Content Writing", "Social Media"],
-          type: "Marketing",
-          rating: 4.2,
-          applicants: 89,
-          matchScore: 88,
-        },
-        {
-          id: "3",
-          title: "Data Science Intern",
-          company: "Analytics Pro",
-          location: "Hyderabad",
-          duration: "5 months",
-          stipend: "₹22,000/month",
-          description:
-            "Work with large datasets, create visualizations, and build predictive models using Python and machine learning.",
-          requirements: ["Statistics background", "Python programming", "Analytical mindset"],
-          skills: ["Python", "Data Analysis", "Machine Learning", "SQL"],
-          type: "Technology",
-          rating: 4.7,
-          applicants: 200,
-          matchScore: 82,
-        },
-        {
-          id: "4",
-          title: "UI/UX Design Intern",
-          company: "Design Studio",
-          location: "Delhi",
-          duration: "3 months",
-          stipend: "₹20,000/month",
-          description:
-            "Create user interfaces and experiences for mobile and web applications. Work with design tools and user research.",
-          requirements: ["Design portfolio", "Creativity", "Basic knowledge of design tools"],
-          skills: ["Graphic Design", "UI/UX", "Figma", "Adobe Creative Suite"],
-          type: "Design",
-          rating: 4.4,
-          applicants: 120,
-          matchScore: 78,
-        },
-        {
-          id: "5",
-          title: "Finance Analyst Intern",
-          company: "Financial Services Inc",
-          location: "Mumbai",
-          duration: "6 months",
-          stipend: "₹24,000/month",
-          description:
-            "Assist in financial analysis, market research, and investment recommendations. Learn about financial markets.",
-          requirements: ["Commerce/Finance background", "Excel proficiency", "Analytical skills"],
-          skills: ["Finance", "Excel", "Data Analysis", "Research"],
-          type: "Finance",
-          rating: 4.3,
-          applicants: 95,
-          matchScore: 75,
-        },
-      ]
+        body: JSON.stringify({
+          skills: userSkills,
+          location: userLocation,
+          duration: preferredDuration,
+          stipend: preferredStipend,
+        }),
+      });
 
-      // Simple matching algorithm based on user data
-      const matchedInternships = mockInternships
-        .map((internship) => {
-          let score = 0
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
 
-          // Match skills
-          const userSkills = formData.skillsExperience.skills.map((s) => s.toLowerCase())
-          const internshipSkills = internship.skills.map((s) => s.toLowerCase())
-          const skillMatches = internshipSkills.filter((skill) =>
-            userSkills.some((userSkill) => userSkill.includes(skill) || skill.includes(userSkill)),
-          ).length
-          score += (skillMatches / internshipSkills.length) * 40
+      const data = await response.json();
 
-          // Match interests
-          const userInterests = formData.skillsExperience.interests.map((i) => i.toLowerCase())
-          const typeMatch = userInterests.some(
-            (interest) =>
-              internship.type.toLowerCase().includes(interest) || interest.includes(internship.type.toLowerCase()),
-          )
-          if (typeMatch) score += 30
+      if (data.success && data.allocation) {
+        const rec = Array.isArray(data.allocation)
+          ? data.allocation[0]
+          : data.allocation;
 
-          // Match location
-          const userLocations = formData.skillsExperience.preferredLocations.map((l) => l.toLowerCase())
-          const locationMatch = userLocations.some(
-            (location) =>
-              location === "any location" ||
-              location === "remote" ||
-              internship.location.toLowerCase().includes(location) ||
-              location.includes(internship.location.toLowerCase()),
-          )
-          if (locationMatch) score += 20
+        const transformedInternship: Internship = {
+          id: "ml-allocated",
+          title: rec.Role,
+          company: rec["Company Name"],
+          location: rec.Location_clean,
+          duration: rec.Duration,
+          stipend: rec.Stipend,
+          description: `Join ${rec["Company Name"]} for an exciting ${rec.Role} opportunity.`,
+          requirements: ["View details for specific requirements"],
+          skills: rec.Skills_text ? rec.Skills_text.split(" ").slice(0, 8) : [],
+          type:
+            rec.Role.includes("Technology") || rec.Role.includes("Software")
+              ? "Technology"
+              : "General",
+          rating: 4.0 + rec.Match_Percentage / 100,
+          applicants: Math.floor(Math.random() * 200) + 50,
+          matchScore: Math.round(rec.Match_Percentage),
+        };
 
-          // Education level bonus
-          if (formData.education.currentLevel.includes("Bachelor's") && internship.type === "Technology") {
-            score += 10
-          }
-
-          return { ...internship, matchScore: Math.min(Math.round(score), 100) }
-        })
-        .sort((a, b) => b.matchScore - a.matchScore)
-
-      setTimeout(() => {
-        setRecommendations(matchedInternships)
-        setLoading(false)
-      }, 2000)
+        setAllocation(transformedInternship);
+      } else {
+        throw new Error(data.error || "Failed to get internship allocation");
+      }
+    } catch (err) {
+      console.error("Error fetching allocation:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to fetch internship allocation. Please make sure the backend server is running."
+      );
+      setAllocation(null);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    generateRecommendations()
-  }, [formData])
-
-  const toggleSaveInternship = (internshipId: string) => {
-    const newSaved = new Set(savedInternships)
-    if (newSaved.has(internshipId)) {
-      newSaved.delete(internshipId)
-    } else {
-      newSaved.add(internshipId)
-    }
-    setSavedInternships(newSaved)
-  }
+  const toggleSave = () => {
+    setIsSaved(!isSaved);
+  };
 
   if (loading) {
     return (
       <div className="text-center py-12">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Finding Perfect Internships for You</h3>
-        <p className="text-gray-600">Analyzing your profile and matching with available opportunities...</p>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">
+          Finding Your Perfect Internship Match
+        </h3>
+        <p className="text-gray-600">
+          Analyzing your profile with our ML model...
+        </p>
       </div>
-    )
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="py-12">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            <strong>Error loading allocation:</strong> {error}
+            <br />
+            <span className="text-sm mt-2 block">
+              Make sure the Flask backend is running on {API_BASE_URL}
+            </span>
+          </AlertDescription>
+        </Alert>
+        <div className="text-center mt-6">
+          <Button onClick={fetchAllocation}>Try Again</Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!allocation) {
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-lg font-medium text-gray-900 mb-2">
+          No allocation found
+        </h3>
+        <p className="text-gray-600">
+          Unable to find a matching internship. Please try again or update your
+          profile.
+        </p>
+        <Button onClick={fetchAllocation} className="mt-4">
+          Try Again
+        </Button>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">Your Personalized Recommendations</h3>
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+          <CheckCircle className="w-8 h-8 text-green-600" />
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 mb-2">
+          Your Allocated Internship
+        </h3>
         <p className="text-gray-600">
-          Based on your profile, we found {recommendations.length} internships that match your skills and interests.
+          Based on your profile, we've found your best matching internship using
+          machine learning.
         </p>
       </div>
 
-      <div className="grid gap-6">
-        {recommendations.map((internship) => (
-          <Card key={internship.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <CardTitle className="text-xl">{internship.title}</CardTitle>
-                    <Badge
-                      variant={
-                        internship.matchScore >= 90 ? "default" : internship.matchScore >= 80 ? "secondary" : "outline"
-                      }
-                      className="ml-2"
-                    >
-                      {internship.matchScore}% Match
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-4 text-gray-600 mb-2">
-                    <div className="flex items-center gap-1">
-                      <Building className="w-4 h-4" />
-                      <span>{internship.company}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      <span>{internship.location}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      <span>{internship.duration}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span>{internship.rating}</span>
-                    </div>
-                    <span>{internship.applicants} applicants</span>
-                    <span className="font-medium text-green-600">{internship.stipend}</span>
-                  </div>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => toggleSaveInternship(internship.id)}
-                  className={savedInternships.has(internship.id) ? "text-blue-600" : "text-gray-400"}
+      <Card className="hover:shadow-lg transition-shadow border-2 border-blue-200">
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <CardTitle className="text-xl">{allocation.title}</CardTitle>
+                <Badge
+                  variant={
+                    allocation.matchScore >= 90
+                      ? "default"
+                      : allocation.matchScore >= 80
+                      ? "secondary"
+                      : "outline"
+                  }
+                  className="ml-2"
                 >
-                  <Bookmark className={`w-4 h-4 ${savedInternships.has(internship.id) ? "fill-current" : ""}`} />
-                </Button>
+                  {allocation.matchScore}% Match
+                </Badge>
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-700 mb-4">{internship.description}</p>
-
-              <div className="space-y-3">
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Required Skills:</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {internship.skills.map((skill) => (
-                      <Badge
-                        key={skill}
-                        variant={formData.skillsExperience.skills.includes(skill) ? "default" : "outline"}
-                      >
-                        {skill}
-                      </Badge>
-                    ))}
-                  </div>
+              <div className="flex items-center gap-4 text-gray-600 mb-2">
+                <div className="flex items-center gap-1">
+                  <Building className="w-4 h-4" />
+                  <span>{allocation.company}</span>
                 </div>
-
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Requirements:</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    {internship.requirements.map((req, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="text-blue-600 mt-1">•</span>
-                        <span>{req}</span>
-                      </li>
-                    ))}
-                  </ul>
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-4 h-4" />
+                  <span>{allocation.location}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Clock className="w-4 h-4" />
+                  <span>{allocation.duration}</span>
                 </div>
               </div>
-
-              <div className="flex gap-3 mt-6">
-                <Button className="flex-1 bg-gray-800 hover:bg-gray-600">
-                  Apply Now
-                  <ExternalLink className="w-4 h-4 ml-2" />
-                </Button>
-                <Button variant="outline">View Details</Button>
+              <div className="flex items-center gap-4 text-sm text-gray-500">
+                <div className="flex items-center gap-1">
+                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  <span>{allocation.rating.toFixed(1)}</span>
+                </div>
+                <span>{allocation.applicants} applicants</span>
+                <span className="font-medium text-green-600">
+                  {allocation.stipend}
+                </span>
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleSave}
+              className={isSaved ? "text-blue-600" : "text-gray-400"}
+            >
+              <Bookmark
+                className={`w-4 h-4 ${isSaved ? "fill-current" : ""}`}
+              />
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-700 mb-4">{allocation.description}</p>
 
-      <div className="text-center pt-6">
-        <Button variant="outline" size="lg">
-          Load More Recommendations
-        </Button>
-      </div>
+          <div className="space-y-3">
+            <div>
+              <h4 className="font-medium text-gray-900 mb-2">
+                Required Skills:
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {allocation.skills.map((skill, idx) => (
+                  <Badge
+                    key={idx}
+                    variant={
+                      formData.skillsExperience.skills.some(
+                        (s) =>
+                          s.toLowerCase().includes(skill.toLowerCase()) ||
+                          skill.toLowerCase().includes(s.toLowerCase())
+                      )
+                        ? "default"
+                        : "outline"
+                    }
+                  >
+                    {skill}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-medium text-gray-900 mb-2">Requirements:</h4>
+              <ul className="text-sm text-gray-600 space-y-1">
+                {allocation.requirements.map((req, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">•</span>
+                    <span>{req}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex gap-3 mt-6">
+            <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
+              Accept & Apply
+              <ExternalLink className="w-4 h-4 ml-2" />
+            </Button>
+            <Button variant="outline">View Details</Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
-  )
+  );
 }
