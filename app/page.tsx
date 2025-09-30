@@ -3,6 +3,10 @@ import { EligibilitySection } from "@/components/eligibility-section"
 import { BenefitsSection } from "@/components/benefits-section"
 import { ResumeUploadSection } from "@/components/resume-upload-section"
 import { Footer } from "@/components/footer"
+import { InfiniteMovingCardsDemo } from "@/components/infiniteMovingCardsDemo"
+import Image from "next/image"
+import DownloadHero from "@/components/download-hero"
+import { Partners } from "@/components/partners"
 
 export default function HomePage() {
   return (
@@ -15,6 +19,9 @@ export default function HomePage() {
         </div>
       </main>
       <ResumeUploadSection />
+      <InfiniteMovingCardsDemo />
+      <DownloadHero />
+      <Partners />
       <Footer />
     </div>
   )

@@ -7,21 +7,24 @@ import { useRouter } from "next/navigation";
 import { MdCloudUpload } from "react-icons/md";
 import { FaFilePen } from "react-icons/fa6";
 import Image from "next/image";
+import { useRef } from "react";
 
 export function ResumeUploadSection() {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleCreateFromScratch = () => {
     router.push("/create-profile");
   };
 
   const handleUploadResume = () => {
+    fileInputRef.current?.click();
     // TODO: Implement resume upload functionality
     console.log("Upload resume clicked");
   };
 
   return (
-    <section className="py-12 bg-white">
+    <section id="internship-recommendations" className="pt-12 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-manrope font-bold text-gray-900 mb-4">

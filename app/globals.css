@@ -76,6 +76,22 @@
   --sidebar-ring: oklch(0.439 0 0);
 }
 
+/* PMIS download section theme */
+.pmis-theme {
+  /* Colors: brand terracotta, dark text, off-white accents, and deep navy accent */
+  --background: oklch(0.72 0.13 52); /* warm terracotta */
+  --foreground: oklch(0.16 0.02 30); /* deep brown for potential text */
+  --primary: oklch(0.22 0.04 52); /* darker terracotta for UI accents */
+  --primary-foreground: oklch(0.98 0 0); /* white text on colored backgrounds */
+  --secondary: oklch(0.97 0.01 95); /* soft off-white */
+  --secondary-foreground: oklch(0.22 0.04 52); /* readable on off-white */
+  --accent: oklch(0.48 0.07 260); /* deep navy accent */
+
+  /* apply background + default text for section */
+  background-color: var(--background);
+  color: var(--primary-foreground);
+}
+
 @theme inline {
   --font-sans: var(--font-khand);
   --font-heading: var(--font-manrope);
@@ -117,6 +133,24 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+.pmis-theme {
+  /* brand tokens (3–5 colors) */
+  --pmis-gradient-start: #9b4109;
+  --pmis-gradient-mid: #cea185;
+  --pmis-gradient-end: #f9f4f0;
+  --primary-foreground: oklch(0.985 0 0); /* white for contrast */
+  --accent: oklch(0.48 0.07 260); /* deep navy accent */
+
+  /* gradient background: left-to-right with mid stop ~72% */
+  background-image: linear-gradient(
+    90deg,
+    var(--pmis-gradient-start) 0%,
+    var(--pmis-gradient-mid) 72%,
+    var(--pmis-gradient-end) 100%
+  );
+  color: var(--primary-foreground);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -139,6 +173,10 @@
     font-family: var(--font-khand);
     font-weight: 600;
   }
+    .font-khand-700 {
+    font-family: var(--font-khand);
+    font-weight: 700;
+  }
 
   .font-manrope-400 {
     font-family: var(--font-manrope);
@@ -147,5 +185,16 @@
 
   .font-manrope {
     font-family: var(--font-manrope);
+  }
+}
+
+@theme inline {
+  --animate-scroll: scroll var(--animation-duration, 40s)
+    var(--animation-direction, forwards) linear infinite;
+
+  @keyframes scroll {
+    to {
+      transform: translate(calc(-50% - 0.5rem));
+    }
   }
 }

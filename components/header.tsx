@@ -30,39 +30,37 @@ export function Header() {
       icon: <RiHome9Fill className="w-5 h-5 mr-1" />,
     },
     {
-      label: "GUIDELINES/DOCUMENTATIONS",
-      href: "/guidelines",
-      hasDropdown: true,
+      label: "RECOMMENDATIONS",
+      href: "#internship-recommendations",
       icon: <IoNewspaper className="w-5 h-5 mr-1" />,
     },
     {
       label: "GALLERY",
-      href: "/gallery",
+      href: "#gallery",
       icon: <FiVideo className="w-5 h-5 mr-1" />,
     },
     {
       label: "MOBILE APP",
-      href: "/mobile-app",
+      href: "#mobile",
       icon: <TbDeviceMobile className="w-5 h-5 mr-1" />,
     },
     {
       label: "SUPPORT",
-      href: "/support",
-      hasDropdown: true,
+      href: "#support",
       icon: <MdSupportAgent className="w-5 h-5 mr-1" />,
     },
-    {
-      label: "COMPENDIUM",
-      href: "/compendium",
-      icon: <FaReadme className="w-5 h-5 mr-1" />,
-    },
+    // {
+    //   label: "COMPENDIUM",
+    //   href: "/compendium",
+    //   icon: <FaReadme className="w-5 h-5 mr-1" />,
+    // },
   ];
 
   return (
     <>
-      <div className="sticky top-0 w-full bg-transparent backdrop-blur-md border">
+      <div className="sticky top-0 w-full bg-transparent backdrop-blur-md z-100 py-1">
         {/* Top Header */}
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Image
@@ -101,7 +99,7 @@ export function Header() {
         </div>
 
         {/* Navigation */}
-        <nav className="bg-slate-800 text-white mx-6 mb-2 rounded-sm">
+        <nav className="bg-slate-800 text-white mx-6 mb-1 rounded-sm">
           <div className="container mx-auto px-4">
             <div className="flex items-center gap-10">
               {navItems.map((item, index) => (
@@ -115,9 +113,9 @@ export function Header() {
                   >
                     {item.icon && item.icon}
                     {item.label}
-                    {item.hasDropdown && (
+                    {/* {item.hasDropdown && (
                       <ChevronDown className="w-4 h-4 ml-1" />
-                    )}
+                    )} */}
                   </a>
                 </div>
               ))}
