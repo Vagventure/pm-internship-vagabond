@@ -19,6 +19,14 @@ import { TbDeviceMobile } from "react-icons/tb";
 import { MdSupportAgent } from "react-icons/md";
 import { FaReadme } from "react-icons/fa6";
 import { LanguageSelect } from "./languageSelect";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 
 export function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -78,7 +86,7 @@ export function Header() {
               />
             </div>
             <div className="flex items-center gap-3">
-              <Button className="bg-[#ff7500] hover:bg-orange-600 text-white px-6 border border-transparent text-[17px] shadow-[0_4px_0_#c65b00]">
+              {/* <Button className="bg-[#ff7500] hover:bg-orange-600 text-white px-6 border border-transparent text-[17px] shadow-[0_4px_0_#c65b00]">
                 <UserRoundPlus size={36} />
                 Youth Registration
               </Button>
@@ -86,6 +94,27 @@ export function Header() {
                 <CircleUserRound size={36} />
                 Login
               </Button>
+ */}
+              <SignedOut>
+                <SignUpButton mode="modal">
+                  <Button className="bg-[#ff7500] hover:bg-orange-600 text-white px-6 border border-transparent text-[17px] shadow-[0_4px_0_#c65b00]">
+                    <UserRoundPlus size={36} />
+                    Youth Registration
+                  </Button>
+                </SignUpButton>
+
+                <SignInButton mode="modal">
+                  <Button className="bg-[#ff7500] hover:bg-orange-600 text-white px-6 border border-transparent text-[17px] shadow-[0_4px_0_#c65b00]">
+                    <CircleUserRound size={36} />
+                    Login
+                  </Button>
+                </SignInButton>
+              </SignedOut>
+
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+
               <div className="ml-4">
                 <Image
                   src="/digital-india-logo.png"
@@ -118,7 +147,7 @@ export function Header() {
                 </div>
               ))}
             </div>
-          <LanguageSelect />
+            <LanguageSelect />
           </div>
         </nav>
       </div>

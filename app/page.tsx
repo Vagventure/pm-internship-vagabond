@@ -14,7 +14,7 @@ import ChatbotEmbed from "@/components/chatbot"
 export default function HomePage() {
   return (
     <>
-    <GoogleTranslateLoader />
+    {/* <GoogleTranslateLoader /> */}
     <div className="min-h-screen bg-white">
       <Header />
       <main className="container mx-auto px-4 py-8">

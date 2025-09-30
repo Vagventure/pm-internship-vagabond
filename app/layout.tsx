@@ -6,6 +6,14 @@ import { Analytics } from "@vercel/analytics/next";
 import { Suspense } from "react";
 import "./globals.css";
 import ChatbotEmbed from "@/components/chatbot";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -34,11 +42,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`font-sans ${manrope.variable} ${khand.variable}`}>
-        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
-        <Analytics />
-      </body>
-    </html>
+    <ClerkProvider
+      appearance={{
+        variables: {
+          fontFamily: "Manrope, sans-serif",
+          colorPrimary: "#ff7500", 
+        },
+      }}
+    >
+      <html lang="en">
+        <body className={`font-sans ${manrope.variable} ${khand.variable}`}>
+          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+          <Analytics />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
