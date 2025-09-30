@@ -56,7 +56,8 @@ export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
             console.log("Sign up success")
             toast.success(data.message)
             setPending(false)
-            setShowOtp(true)
+            // setShowOtp(true)
+            onClose();
             // router.push(`/verify`)
            
         } else if (res.status === 400) {

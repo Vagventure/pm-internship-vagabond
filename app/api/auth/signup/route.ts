@@ -80,21 +80,21 @@ export async function POST(req: Request) {
             await newUser.save();
         }
 
-        const emailResponse = await sendVerificationEmail(
-            email,
-            verifyCode,
-        )
+        // const emailResponse = await sendVerificationEmail(
+        //     email,
+        //     verifyCode,
+        // )
 
-        if (!emailResponse) {
-            return Response.json({
-                success: false,
-                message: "Failed to send verification email"
-            }, { status: 400 })
-        }
+        // if (!emailResponse) {
+        //     return Response.json({
+        //         success: false,
+        //         message: "Failed to send verification email"
+        //     }, { status: 400 })
+        // }
 
         return NextResponse.json({
             success: true,
-            message: "User successfully created, please verify your identity"
+            message: "User successfully created, you may login now"
         }, { status: 201 })
 
 

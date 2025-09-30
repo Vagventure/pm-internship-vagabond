@@ -26,6 +26,7 @@ import { TbDeviceMobile } from "react-icons/tb";
 import { MdSupportAgent } from "react-icons/md";
 import { FaReadme } from "react-icons/fa6";
 import { LanguageSelect } from "./languageSelect";
+<<<<<<< HEAD
 import {
   ClerkProvider,
   SignInButton,
@@ -51,6 +52,11 @@ export function Header() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const avatarFallback = session?.user?.name?.charAt(0).toUpperCase()
+=======
+
+export function Header() {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+>>>>>>> 62f1af0 (Save my changes before syncing upstream)
 
   const navItems = [
 <<<<<<< HEAD
@@ -108,7 +114,11 @@ export function Header() {
               />
             </div>
             <div className="flex items-center gap-3">
+<<<<<<< HEAD
               {/* <Button className="bg-[#ff7500] hover:bg-orange-600 text-white px-6 border border-transparent text-[17px] shadow-[0_4px_0_#c65b00]">
+=======
+              <Button className="bg-[#ff7500] hover:bg-orange-600 text-white px-6 border border-transparent text-[17px] shadow-[0_4px_0_#c65b00]">
+>>>>>>> 62f1af0 (Save my changes before syncing upstream)
                 <UserRoundPlus size={36} />
                 Youth Registration
               </Button>
@@ -116,6 +126,7 @@ export function Header() {
                 <CircleUserRound size={36} />
                 Login
               </Button>
+<<<<<<< HEAD
  */}
               <SignedOut>
                 <SignUpButton mode="modal">
@@ -137,6 +148,8 @@ export function Header() {
                 <UserButton />
               </SignedIn>
 
+=======
+>>>>>>> 62f1af0 (Save my changes before syncing upstream)
               <div className="ml-4">
                 <Image
                   src="/digital-india-logo.png"
@@ -263,9 +276,16 @@ export function Header() {
                 <div key={index} className="relative">
                   <a
                     href={item.href}
+<<<<<<< HEAD
                     className={`flex items-center px-4 py-4 text-sm font-khand-600 hover:bg-slate-700 transition-colors ${
                       item.active ? "bg-slate-700" : ""
                     }`}
+=======
+                    className={`relative flex items-center gap-1 py-1 text-md font-khand-600 transition-colors 
+              after:content-[''] after:block after:h-0.5 after:bg-[#e87817] 
+              after:absolute after:bottom-0 after:left-0 after:right-0 
+              after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300`}
+>>>>>>> 62f1af0 (Save my changes before syncing upstream)
                   >
                     {item.label}
 <<<<<<< HEAD
@@ -276,13 +296,20 @@ export function Header() {
                 </div>
               ))}
             </div>
-            <LanguageSelect />
+          <LanguageSelect />
           </div>
         </nav>
       </div>
 
+<<<<<<< HEAD
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
       <RegistorModal isOpen={isRegistorModalOpen} onClose={() => setIsRegistorModalOpen(false)} />
+=======
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
+>>>>>>> 62f1af0 (Save my changes before syncing upstream)
     </>
   )
 }
