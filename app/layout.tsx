@@ -5,6 +5,8 @@ import { Khand } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Suspense } from "react";
 import "./globals.css";
+
+// Your local login/register
 import ChatbotEmbed from "@/components/chatbot";
 import {
   ClerkProvider,
@@ -14,6 +16,11 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
+
+// Upstream session/auth
+import { Toaster } from "@/components/ui/sonner";
+import { SessionProvider } from "next-auth/react";
+import { AuthProvider } from "@/providers/session-provider";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -46,16 +53,21 @@ export default function RootLayout({
       appearance={{
         variables: {
           fontFamily: "Manrope, sans-serif",
-          colorPrimary: "#ff7500", 
+          colorPrimary: "#ff7500",
         },
       }}
     >
-      <html lang="en">
-        <body className={`font-sans ${manrope.variable} ${khand.variable}`}>
-          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
-          <Analytics />
-        </body>
-      </html>
+      <SessionProvider>
+        <html lang="en">
+          <body className={`font-sans ${manrope.variable} ${khand.variable}`}>
+            <AuthProvider>
+              <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+              <Analytics />
+              <Toaster />
+            </AuthProvider>
+          </body>
+        </html>
+      </SessionProvider>
     </ClerkProvider>
   );
 }

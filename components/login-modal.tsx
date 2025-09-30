@@ -6,6 +6,9 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { X, User, Key, Eye, EyeOff } from "lucide-react"
+import { signIn } from 'next-auth/react'
+import {toast} from "sonner"
+import { useRouter } from "next/navigation"
 
 interface LoginModalProps {
   isOpen: boolean
@@ -14,19 +17,45 @@ interface LoginModalProps {
 
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [showPassword, setShowPassword] = useState(false)
-  const [username, setUsername] = useState("")
+  const [userEmail, setUserEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [pending, setPending] = useState(false)
 
+  const router = useRouter();
   if (!isOpen) return null
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle login logic here
-    console.log("Login attempt:", { username, password })
-  }
+   const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setPending(true)
+        console.log(userEmail,"-------",password)
+        const res = await signIn("credentials", {
+            redirect: false,
+            email: userEmail,
+            password
+        })
+        if (res?.ok) {
+            // router.push("/")
+            console.log("1")
+            toast.success("Login successfull")
+            onClose()
+            router.push("/create-profile")
+        } else if (res?.status == 401) {
+            setPending(false)
+            console.log("2")
+            toast.error("Error logging in")
+            setError("Invalid Credentials")
+          } else {
+            setError("Something went wrong")
+            toast.error("Error logging in2")
+            console.log("3")
+
+        }
+
+    }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 w-full max-w-md relative shadow-2xl">
         {/* Close button */}
         <button
@@ -38,8 +67,8 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-blue-600 mb-2">LOGIN</h2>
-          <p className="text-gray-600">Login using Username / Mobile / CIN</p>
+          <h2 className="text-3xl font-bold text-[#1d293d] mb-2">LOGIN</h2>
+          <p className="text-gray-600 font-manrope-400">Login using Email / Mobile / CIN</p>
         </div>
 
         {/* Form */}
@@ -51,9 +80,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             </div>
             <Input
               type="text"
-              placeholder="Enter Username / Mobile / CIN"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter Email / Mobile / CIN"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
               className="pl-12 py-3 text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
@@ -84,7 +113,8 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
           {/* Login button */}
           <Button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-base font-semibold rounded-lg"
+            disabled={pending}
+            className="w-full bg-[#1d293d] hover:bg-[#141c2a] text-white py-3 text-base font-semibold rounded-lg font-manrope-400"
           >
             Login
           </Button>
@@ -97,11 +127,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
         {/* Notes */}
         <div className="mt-8 space-y-4 text-sm text-gray-600">
-          <p>
+          <p className="font-manrope-400">
             <strong>Note:</strong> User ID and One Time Password have been sent to the email address you provided.
             Please use them to log in to your account.
           </p>
-          <p>
+          <p className="font-manrope-400">
             <strong>Note:</strong> Your account will be blocked for 15 minutes if you enter incorrect password in 3
             consecutive attempts. Please reset your password if your account is blocked.
           </p>

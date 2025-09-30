@@ -2,20 +2,51 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Upload, FileText, ArrowRight, UserRoundPlus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { MdCloudUpload } from "react-icons/md";
 import { FaFilePen } from "react-icons/fa6";
 import Image from "next/image";
-import { useRef } from "react";
-import UploadResumeButton from "./uploadResume";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 export function ResumeUploadSection() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [uploadComplete, setUploadComplete] = useState<boolean>(false);
 
   const handleCreateFromScratch = () => {
     router.push("/create-profile");
+  };
+
+  const handleUploadResume = () => {
+    fileInputRef.current?.click();
+  };
+
+  const simulateUpload = (file: File) => {
+    setUploadProgress(0);
+    setUploadComplete(false);
+
+    const interval = setInterval(() => {
+      setUploadProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setUploadComplete(true);
+          toast.success("File uploaded successfully");
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 200);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setFileName(file.name);
+      simulateUpload(file);
+    }
   };
 
   return (
@@ -45,7 +76,42 @@ export function ResumeUploadSection() {
                 Already have a resume? Upload it and we'll automatically extract
                 your information to find the best internship matches.
               </p>
-                <UploadResumeButton/>
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileChange}
+                accept=".pdf,.doc,.docx"
+              />
+
+              {!uploadComplete && (
+                <Button
+                  onClick={handleUploadResume}
+                  className="w-full bg-[#1D293D] hover:bg-[#111827] text-white px-6 border border-transparent font-manrope font-bold shadow-[0_4px_0_#000000]"
+                >
+                  <MdCloudUpload />
+                  Upload Resume
+                </Button>
+              )}
+
+              {fileName && (
+                <div className="mt-4">
+                  {!uploadComplete && (
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-green-500 h-2 rounded-full transition-all"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                  )}
+                  {uploadComplete && (
+                    <p className="text-green-600 mt-2 font-medium">
+                      Upload complete!
+                    </p>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
 
