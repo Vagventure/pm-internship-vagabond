@@ -8,6 +8,7 @@ import { MdCloudUpload } from "react-icons/md";
 import { FaFilePen } from "react-icons/fa6";
 import Image from "next/image";
 import { useRef } from "react";
+import UploadResumeButton from "./uploadResume";
 
 export function ResumeUploadSection() {
   const router = useRouter();
@@ -15,12 +16,6 @@ export function ResumeUploadSection() {
 
   const handleCreateFromScratch = () => {
     router.push("/create-profile");
-  };
-
-  const handleUploadResume = () => {
-    fileInputRef.current?.click();
-    // TODO: Implement resume upload functionality
-    console.log("Upload resume clicked");
   };
 
   return (
@@ -50,10 +45,7 @@ export function ResumeUploadSection() {
                 Already have a resume? Upload it and we'll automatically extract
                 your information to find the best internship matches.
               </p>
-              <Button className="w-full bg-[#1D293D] hover:bg-[#111827] text-white px-6 border border-transparent font-manrope font-bold shadow-[0_4px_0_#000000]">
-                <MdCloudUpload />
-                Upload Resume
-              </Button>
+                <UploadResumeButton/>
             </CardContent>
           </Card>
 

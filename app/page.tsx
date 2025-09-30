@@ -7,9 +7,12 @@ import { InfiniteMovingCardsDemo } from "@/components/infiniteMovingCardsDemo"
 import Image from "next/image"
 import DownloadHero from "@/components/download-hero"
 import { Partners } from "@/components/partners"
+import GoogleTranslateLoader from "@/components/gTranslate"
 
 export default function HomePage() {
   return (
+    <>
+    <GoogleTranslateLoader />
     <div className="min-h-screen bg-white">
       <Header />
       <main className="container mx-auto px-4 py-8">
@@ -24,5 +27,6 @@ export default function HomePage() {
       <Partners />
       <Footer />
     </div>
+    </>
   )
 }

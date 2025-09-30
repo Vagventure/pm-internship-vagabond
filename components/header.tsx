@@ -18,6 +18,7 @@ import { FiVideo } from "react-icons/fi";
 import { TbDeviceMobile } from "react-icons/tb";
 import { MdSupportAgent } from "react-icons/md";
 import { FaReadme } from "react-icons/fa6";
+import { LanguageSelect } from "./languageSelect";
 
 export function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -58,7 +59,7 @@ export function Header() {
 
   return (
     <>
-      <div className="sticky top-0 w-full bg-transparent backdrop-blur-md z-100 py-1">
+      <div className="sticky top-0 w-full z-100 py-1 bg-white/70 backdrop-blur-sm">
         {/* Top Header */}
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
@@ -100,7 +101,7 @@ export function Header() {
 
         {/* Navigation */}
         <nav className="bg-slate-800 text-white mx-6 mb-1 rounded-sm">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 flex justify-between">
             <div className="flex items-center gap-10">
               {navItems.map((item, index) => (
                 <div key={index} className="relative">
@@ -113,13 +114,11 @@ export function Header() {
                   >
                     {item.icon && item.icon}
                     {item.label}
-                    {/* {item.hasDropdown && (
-                      <ChevronDown className="w-4 h-4 ml-1" />
-                    )} */}
                   </a>
                 </div>
               ))}
             </div>
+          <LanguageSelect />
           </div>
         </nav>
       </div>
