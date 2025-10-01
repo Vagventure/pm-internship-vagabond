@@ -7,8 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { X, User, Key, Eye, EyeOff } from "lucide-react"
 import { signIn } from 'next-auth/react'
-import {toast} from "sonner"
+import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+
+import { FcGoogle } from "react-icons/fc"
+import { FaGithub, FaXbox } from "react-icons/fa";
+
 
 interface LoginModalProps {
   isOpen: boolean
@@ -25,37 +29,46 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const router = useRouter();
   if (!isOpen) return null
 
-   const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setPending(true)
-        console.log(userEmail,"-------",password)
-        const res = await signIn("credentials", {
-            redirect: false,
-            email: userEmail,
-            password
-        })
-        if (res?.ok) {
-            // router.push("/")
-            console.log("1")
-            toast.success("Login successfull")
-            onClose()
-            router.push("/create-profile")
-        } else if (res?.status == 401) {
-            setPending(false)
-            console.log("2")
-            toast.error("Error logging in")
-            setError("Invalid Credentials")
-          } else {
-            setError("Something went wrong")
-            toast.error("Error logging in2")
-            console.log("3")
-
-        }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPending(true)
+    console.log(userEmail, "-------", password)
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: userEmail,
+      password
+    })
+    if (res?.ok) {
+      // router.push("/")
+      console.log("1")
+      toast.success("Login successfull")
+      onClose()
+      router.push("/create-profile")
+    } else if (res?.status == 401) {
+      setPending(false)
+      console.log("2")
+      toast.error("Error logging in")
+      setError("Invalid Credentials")
+    } else {
+      setError("Something went wrong")
+      toast.error("Error logging in2")
+      console.log("3")
 
     }
 
+  }
+
+  const handleProvider = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    value: "github" | "google"
+  ) => {
+    event.preventDefault();
+    signIn(value, { callbackUrl: "/" })
+
+  }
+
   return (
-    <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center mt-20 z-50 p-4">
+    <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center z-100 p-4">
       <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 w-full max-w-md relative shadow-2xl">
         {/* Close button */}
         <button
@@ -123,6 +136,31 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         {/* Forgot password link */}
         <div className="mt-6 text-center">
           <button className="text-gray-600 hover:text-gray-800 underline text-sm">Forgot / Reset Password</button>
+        </div>
+
+
+        <div className="flex flex-col items-center mt-1.5">
+          <span>or</span>
+          <div className='flex justify-evenly my-3'>
+            <Button
+              disabled={pending}
+              onClick={(e) => handleProvider(e, "google")}
+              variant="outline"
+              size="lg"
+              className="bg-slate-300 hover:bg-slate-400 hover:scale-110"
+            ><FcGoogle className="mx-13 size-7" />
+            </Button>
+
+            <Button
+              disabled={pending}
+              onClick={(e) => handleProvider(e, "github")}
+              variant="outline"
+              size="lg"
+              className="bg-slate-300 hover:bg-slate-400 hover:scale-110"
+            ><FaGithub className="mx-13 size-7" />
+            </Button>
+
+          </div>
         </div>
 
         {/* Notes */}

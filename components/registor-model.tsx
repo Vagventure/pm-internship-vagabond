@@ -15,6 +15,10 @@ import {
 } from "@/components/ui/input-otp";
 
 
+import { FcGoogle } from "react-icons/fc"
+import { FaGithub, FaXbox } from "react-icons/fa";
+import { signIn } from 'next-auth/react'
+
 interface LoginModalProps {
     isOpen: boolean
     onClose: () => void
@@ -59,7 +63,7 @@ export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
             // setShowOtp(true)
             onClose();
             // router.push(`/verify`)
-           
+
         } else if (res.status === 400) {
             toast.error(data.message)
             setError(data.message);
@@ -78,29 +82,29 @@ export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
         e.preventDefault();
         setPending(true);
         console.log("This is your email : ", form.email)
-    
+
         const res = await fetch("/api/auth/verifyUser", {
-          method: "POST",
-          headers: { "Content-type": "application-json" },
-          body: JSON.stringify({
-            verifyCode: value,
-            email: decodeURIComponent(form.email)
-          }),
+            method: "POST",
+            headers: { "Content-type": "application-json" },
+            body: JSON.stringify({
+                verifyCode: value,
+                email: decodeURIComponent(form.email)
+            }),
         });
-    
+
         const data = await res.json();
         if (res.ok) {
-          toast.success(data.message);
-          onClose();
+            toast.success(data.message);
+            onClose();
         } else if (res.status == 409) {
-          toast.success(data.message);
-          router.push("/sign-in");
+            toast.success(data.message);
+            router.push("/sign-in");
         } else {
-          toast.error(data.message);
-          setValue("");
-          setPending(false);
+            toast.error(data.message);
+            setValue("");
+            setPending(false);
         }
-      };
+    };
 
     const handleResendOtp = async () => {
         setPending(true);
@@ -120,8 +124,17 @@ export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
         }
     };
 
+    const handleProvider = (
+        event: React.MouseEvent<HTMLButtonElement>,
+        value: "github" | "google"
+    ) => {
+        event.preventDefault();
+        signIn(value, { callbackUrl: "/" })
+
+    }
+
     return (
-        <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center mt-24 z-50 p-4">
+        <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center z-100 p-4">
             {!showOtp ? (<div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 w-full max-w-md relative shadow-2xl">
                 {/* Close button */}
                 <button
@@ -228,13 +241,38 @@ export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
                     <button className="text-gray-600 hover:text-gray-800 underline text-sm">Forgot / Reset Password</button>
                 </div>
 
+                <div className="flex flex-col items-center mt-1.5">
+                    <span>or</span>
+
+                    <div className='flex justify-evenly my-3'>
+                        <Button
+                            disabled={pending}
+                            onClick={(e) => handleProvider(e, "google")}
+                            variant="outline"
+                            size="lg"
+                            className="bg-slate-300 hover:bg-slate-400 hover:scale-110"
+                        ><FcGoogle className="mx-13 size-7" />
+                        </Button>
+
+                        <Button
+                            disabled={pending}
+                            onClick={(e) => handleProvider(e, "github")}
+                            variant="outline"
+                            size="lg"
+                            className="bg-slate-300 hover:bg-slate-400 hover:scale-110"
+                        ><FaGithub className="mx-13 size-7" />
+                        </Button>
+
+                    </div>
+                </div>
+
                 {/* Notes */}
                 <div className="mt-8 space-y-4 text-sm text-gray-600">
                     <p className="font-manrope-400">
                         <strong>Note:</strong> User ID and One Time Password have been sent to the email address you provided.
                         Please use them to log in to your account.
                     </p>
-                    
+
                 </div>
             </div>) : (
                 <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center z-50 p-4">

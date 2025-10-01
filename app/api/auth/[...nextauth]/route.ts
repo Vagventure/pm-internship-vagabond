@@ -3,6 +3,8 @@ import User from "@/models/user";
 import bcrypt from "bcryptjs"
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import Github from "next-auth/providers/github";
+import Google from "next-auth/providers/google";
 
 console.log("Landed on sign-user auth")
 const handler = NextAuth({
@@ -11,6 +13,16 @@ const handler = NextAuth({
         strategy: "jwt",
     },
     providers: [
+
+        Github({
+            clientId: process.env.GITHUB_ID as string,
+            clientSecret: process.env.GITHUB_SECRET as string
+        }),
+
+        Google({
+            clientId: process.env.GOOGLE_ID as string,
+            clientSecret: process.env.GOOGLE_SECRET as string,
+        }),
 
         CredentialsProvider({
             name: "Credentials",
@@ -42,6 +54,43 @@ const handler = NextAuth({
     ],
     callbacks: {
 
+        async signIn({ account, profile, user }) {
+            if (account?.provider === "github") {
+                await dbConnect();
+                const existingUser = await User.findOne({ email: profile?.email })
+
+                if (!existingUser) {
+                    await User.create({
+                        name: profile?.name || "Anonymous",
+                        email: profile?.email,
+                        isVerified: true,
+                        verifyCode: "oauth",
+                        verifyCodeExpiry: new Date()
+                    })
+                        ; (profile as any).isNewUser = true
+                }
+            }
+
+            if (account?.provider === "google") {
+                await dbConnect();
+                const existingUser = await User.findOne({ email: profile?.email })
+
+                if (!existingUser) {
+                    await User.create({
+                        name: profile?.name || "Anonymous",
+                        email: profile?.email,
+                        image: profile?.image,
+                        isVerified: true,
+                        verifyCode: "oauth",
+                        verifyCodeExpiry: new Date()
+                    })
+                        ; (profile as any).isNewUser = true
+                }
+            }
+
+            return true;
+        },
+
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
@@ -58,9 +107,17 @@ const handler = NextAuth({
                 }
             }
             return session
-        }
+        },
 
+        async redirect({ url, baseUrl }) {
+            const user = (url as any)?.user
+            if (user?.isNewUser) {
+                return "/create-profile"
+            }
+            return "/"
+        }
     },
+
     secret: process.env.NEXTAUTH_SECRET
 
 })
