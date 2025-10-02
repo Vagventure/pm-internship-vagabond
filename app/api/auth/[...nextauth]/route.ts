@@ -34,19 +34,20 @@ const handler = NextAuth({
             async authorize(credentials) {
                 try {
                     await dbConnect();
-                    const user = await User.findOne({ email: credentials?.email })
-                    if (!user) {
-                        throw new Error("User not found")
-                    }
-                    const isValidPassword = await bcrypt.compare(credentials?.password ?? "", user.password as string)
-                    if (!isValidPassword) {
-                        throw new Error("Invalid Password")
-                    }
+                    const user = await User.findOne({ email: credentials?.email });
+
+                    if (!user) throw new Error("User not found");
+
+                    const isValidPassword = await bcrypt.compare(credentials?.password ?? "", user.password as string);
+                    if (!isValidPassword) throw new Error("Invalid Password");
 
                     return user;
                 } catch (err) {
-                    console.error("Authorize error:", err);
-                    return null
+                    if (err instanceof Error && (err.message === "User not found" || err.message === "Invalid Password")) {
+                        throw err; 
+                    }
+                    console.error("Unexpected authorize error:", err);
+                    throw new Error("Something went wrong"); 
                 }
             }
 
@@ -67,7 +68,7 @@ const handler = NextAuth({
                         verifyCode: "oauth",
                         verifyCodeExpiry: new Date()
                     })
-                        ; (profile as any).isNewUser = true
+
                 }
             }
 
@@ -84,7 +85,7 @@ const handler = NextAuth({
                         verifyCode: "oauth",
                         verifyCodeExpiry: new Date()
                     })
-                        ; (profile as any).isNewUser = true
+
                 }
             }
 
@@ -109,13 +110,11 @@ const handler = NextAuth({
             return session
         },
 
-        async redirect({ url, baseUrl }) {
-            const user = (url as any)?.user
-            if (user?.isNewUser) {
-                return "/create-profile"
-            }
-            return "/"
-        }
+
+    },
+    pages: {
+        signIn: "/",
+        error: "/auth/error",
     },
 
     secret: process.env.NEXTAUTH_SECRET

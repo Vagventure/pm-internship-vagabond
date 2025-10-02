@@ -26,8 +26,12 @@ import { useRouter } from "next/navigation";
 export function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegistorModalOpen, setIsRegistorModalOpen] = useState(false);
+  const [showSignup, setShowSignup] = useState(true);
+
 
   const { data: session, status } = useSession();
+  // if (!session && status === "loading") return null;
+
   const router = useRouter();
   const avatarFallback = session?.user?.name?.charAt(0).toUpperCase();
 
@@ -38,6 +42,7 @@ export function Header() {
     { label: "MOBILE APP", href: "#mobile", icon: <TbDeviceMobile className="w-5 h-5 mr-1" /> },
     { label: "SUPPORT", href: "#support", icon: <MdSupportAgent className="w-5 h-5 mr-1" /> },
   ];
+
 
   const handleSignOut = async () => {
     await signOut({ redirect: false });
@@ -61,10 +66,10 @@ export function Header() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className="flex items-center gap-2 cursor-pointer">
-                    <span className="font-medium">{session.user?.name}</span>
+                    <span translate="no" className="font-medium notranslate">{session.user?.name}</span>
                     <Avatar className="size-10 hover:opacity-75 transition">
                       <AvatarImage src={session.user?.image || undefined} />
-                      <AvatarFallback className="bg-sky-900 text-white">{avatarFallback}</AvatarFallback>
+                      <AvatarFallback translate="no" className="bg-sky-900 text-white notranslate">{avatarFallback}</AvatarFallback>
                     </Avatar>
                   </div>
                 </DropdownMenuTrigger>
@@ -121,7 +126,10 @@ export function Header() {
       </div>
 
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
-      <RegistorModal isOpen={isRegistorModalOpen} onClose={() => setIsRegistorModalOpen(false)} />
+      <RegistorModal isOpen={isRegistorModalOpen} onClose={() => setIsRegistorModalOpen(false)} openLogin={() => {
+        setIsRegistorModalOpen(false);
+        setIsLoginModalOpen(true);
+      }} />
     </>
   );
 }

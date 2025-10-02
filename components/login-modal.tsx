@@ -38,22 +38,15 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       email: userEmail,
       password
     })
-    if (res?.ok) {
-      // router.push("/")
-      console.log("1")
-      toast.success("Login successfull")
-      onClose()
-      router.push("/create-profile")
-    } else if (res?.status == 401) {
-      setPending(false)
-      console.log("2")
-      toast.error("Error logging in")
-      setError("Invalid Credentials")
+    if (res?.error) {
+      // show the specific error thrown from authorize()
+      setError(res.error);
+      toast.error(res.error);
+      setPending(false);
     } else {
-      setError("Something went wrong")
-      toast.error("Error logging in2")
-      console.log("3")
-
+      toast.success("Login successful");
+      onClose();
+      setError(""); // clear any previous error
     }
 
   }
@@ -141,14 +134,14 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
         <div className="flex flex-col items-center mt-1.5">
           <span>or</span>
-          <div className='flex justify-evenly my-3'>
+          <div className='flex justify-evenly my-3 gap-2'>
             <Button
               disabled={pending}
               onClick={(e) => handleProvider(e, "google")}
               variant="outline"
               size="lg"
-              className="bg-slate-300 hover:bg-slate-400 hover:scale-110"
-            ><FcGoogle className="mx-13 size-7" />
+              className="bg-slate-300 hover:bg-slate-400 hover:scale-105"
+            ><FcGoogle className="mx-16 size-7" />
             </Button>
 
             <Button
@@ -156,8 +149,8 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               onClick={(e) => handleProvider(e, "github")}
               variant="outline"
               size="lg"
-              className="bg-slate-300 hover:bg-slate-400 hover:scale-110"
-            ><FaGithub className="mx-13 size-7" />
+              className="bg-slate-300 hover:bg-slate-400 hover:scale-105"
+            ><FaGithub className="mx-16 size-7" />
             </Button>
 
           </div>

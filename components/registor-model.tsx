@@ -22,9 +22,10 @@ import { signIn } from 'next-auth/react'
 interface LoginModalProps {
     isOpen: boolean
     onClose: () => void
+    openLogin: ()=>void
 }
 
-export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
+export function RegistorModal({ isOpen, onClose, openLogin }: LoginModalProps) {
     const [showOtp, setShowOtp] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [pending, setPending] = useState(false)
@@ -61,8 +62,13 @@ export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
             toast.success(data.message)
             setPending(false)
             // setShowOtp(true)
+            await signIn("credentials", {
+                email: form.email,
+                password: form.password,
+                redirect: true,
+                callbackUrl: "/create-profile",
+            });
             onClose();
-            // router.push(`/verify`)
 
         } else if (res.status === 400) {
             toast.error(data.message)
@@ -70,7 +76,8 @@ export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
             setPending(false);
         } else if (res.status == 409) {
             toast.error(data.message)
-            router.push("/sign-in")
+            onClose();
+            openLogin();
         } else if (res.status === 500) {
             setError(data.message);
             setPending(false);
@@ -129,7 +136,7 @@ export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
         value: "github" | "google"
     ) => {
         event.preventDefault();
-        signIn(value, { callbackUrl: "/" })
+        signIn(value, { callbackUrl: "/create-profile" })
 
     }
 
@@ -244,14 +251,14 @@ export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
                 <div className="flex flex-col items-center mt-1.5">
                     <span>or</span>
 
-                    <div className='flex justify-evenly my-3'>
+                    <div className='flex justify-evenly my-3 gap-2'>
                         <Button
                             disabled={pending}
                             onClick={(e) => handleProvider(e, "google")}
                             variant="outline"
                             size="lg"
-                            className="bg-slate-300 hover:bg-slate-400 hover:scale-110"
-                        ><FcGoogle className="mx-13 size-7" />
+                            className="bg-slate-300 hover:bg-slate-400 hover:scale-105"
+                        ><FcGoogle className="mx-16 size-7" />
                         </Button>
 
                         <Button
@@ -259,8 +266,8 @@ export function RegistorModal({ isOpen, onClose }: LoginModalProps) {
                             onClick={(e) => handleProvider(e, "github")}
                             variant="outline"
                             size="lg"
-                            className="bg-slate-300 hover:bg-slate-400 hover:scale-110"
-                        ><FaGithub className="mx-13 size-7" />
+                            className="bg-slate-300 hover:bg-slate-400 hover:scale-105"
+                        ><FaGithub className="mx-16 size-7" />
                         </Button>
 
                     </div>

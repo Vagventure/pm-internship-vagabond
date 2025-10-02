@@ -1,4 +1,4 @@
-import {dbConnect} from "@/lib/dbConnect";
+import { dbConnect } from "@/lib/dbConnect";
 // import dbConnect from "../../../../lib/dbConnect";
 import User from "@/models/user";
 import { NextResponse } from "next/server";
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
         }, { status: 400 })
     }
 
-    console.log(name,"--",email,"--",password,"--",confirmPassword);
+    console.log(name, "--", email, "--", password, "--", confirmPassword);
 
     if (!isValidEmail(email)) {
         return NextResponse.json({
@@ -46,9 +46,9 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10)
     const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
-    const verifyCodeExpiry = new Date (Date.now() + 3600000);
+    const verifyCodeExpiry = new Date(Date.now() + 3600000);
 
-    console.log(hashedPassword,"--",verifyCode,"--",verifyCodeExpiry);
+    console.log(hashedPassword, "--", verifyCode, "--", verifyCodeExpiry);
     try {
         console.log("dbConnect:", dbConnect);
         await dbConnect();
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
             if (existingUser.isVerified) {
                 return NextResponse.json({
                     success: false,
-                    message: "User already verified"
+                    message: "User already exists and is verified"
                 }, { status: 409 })
             } else {
                 existingUser.password = hashedPassword,
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
                 email,
                 name,
                 password: hashedPassword,
-                isVerified: false,
+                isVerified: true,
                 verifyCode: verifyCode,
                 verifyCodeExpiry: verifyCodeExpiry
             })
