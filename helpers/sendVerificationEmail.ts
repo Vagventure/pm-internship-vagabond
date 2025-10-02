@@ -1,5 +1,5 @@
 import { Resend } from 'resend';
-import {PlaidVerifyIdentityEmail} from "../emails/verificationEmail"
+import PMInternshipEmail from "../emails/verificationEmail"
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendVerificationEmail(
@@ -8,11 +8,10 @@ export async function sendVerificationEmail(
 ) {
     try {
         await resend.emails.send({
-            from: 'onboarding@resend.dev',
+            from: process.env.RESEND_DOMAIN as string,
             to: email,
             subject: 'Verification Email',
-            // react: PlaidVerifyIdentityEmail({validationCode: verifyCode}),
-            react: PlaidVerifyIdentityEmail({validationCode: verifyCode}),
+            react: PMInternshipEmail({validationCode: verifyCode}),
         });
         console.log("Verification email sent successsfully");
         return Response.json({
