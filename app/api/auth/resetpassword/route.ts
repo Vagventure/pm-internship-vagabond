@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 
         return Response.json({
             success: true,
-            message: "New password successfully updated"
+            message: "New password set successfully, you may login now"
         }, { status: 200 })
 
     } catch (err) {

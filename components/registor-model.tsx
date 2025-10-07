@@ -22,7 +22,7 @@ import { signIn } from 'next-auth/react'
 interface LoginModalProps {
     isOpen: boolean
     onClose: () => void
-    openLogin: ()=>void
+    openLogin: () => void
 }
 
 export function RegistorModal({ isOpen, onClose, openLogin }: LoginModalProps) {
@@ -37,7 +37,9 @@ export function RegistorModal({ isOpen, onClose, openLogin }: LoginModalProps) {
         name: "",
         email: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        // bio:"",
+        // t2f:false
     })
 
     // const email = searchParams.get("email");
@@ -65,8 +67,8 @@ export function RegistorModal({ isOpen, onClose, openLogin }: LoginModalProps) {
             await signIn("credentials", {
                 email: form.email,
                 password: form.password,
-                redirect: true,
-                callbackUrl: "/create-profile",
+                redirect: false,
+                // callbackUrl: "/create-profile",
             });
             onClose();
 
@@ -136,7 +138,8 @@ export function RegistorModal({ isOpen, onClose, openLogin }: LoginModalProps) {
         value: "github" | "google"
     ) => {
         event.preventDefault();
-        signIn(value, { callbackUrl: "/create-profile" })
+        // signIn(value, { callbackUrl: "/create-profile" })
+        signIn(value)
 
     }
 
@@ -243,11 +246,7 @@ export function RegistorModal({ isOpen, onClose, openLogin }: LoginModalProps) {
                     </Button>
                 </form>
 
-                {/* Forgot password link */}
-                <div className="mt-6 text-center">
-                    <button className="text-gray-600 hover:text-gray-800 underline text-sm">Forgot / Reset Password</button>
-                </div>
-
+               
                 <div className="flex flex-col items-center mt-1.5">
                     <span>or</span>
 

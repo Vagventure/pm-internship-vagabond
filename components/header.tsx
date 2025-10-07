@@ -12,6 +12,7 @@ import { FiVideo } from "react-icons/fi";
 import { TbDeviceMobile } from "react-icons/tb";
 import { MdSupportAgent } from "react-icons/md";
 import { LanguageSelect } from "./languageSelect";
+import ProfileModal from "./user-profile";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -27,6 +28,7 @@ export function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegistorModalOpen, setIsRegistorModalOpen] = useState(false);
   const [showSignup, setShowSignup] = useState(true);
+  const [open, setOpen] = useState(false);
 
 
   const { data: session, status } = useSession();
@@ -49,6 +51,10 @@ export function Header() {
     router.push("/");
   };
 
+  const handleProfile = async ()=>{
+    window.location.href = "/profile"
+  }
+
   return (
     <>
       <div className="sticky top-0 w-full z-100 py-1 bg-white/70 backdrop-blur-sm">
@@ -66,7 +72,8 @@ export function Header() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className="flex items-center gap-2 cursor-pointer">
-                    <span translate="no" className="font-medium notranslate">{session.user?.name}</span>
+                    {/* <span translate="no" className="font-medium notranslate">{session.user?.name}</span> */}
+                    {/* <span translate="no" className="font-medium notranslate">Account</span> */}
                     <Avatar className="size-10 hover:opacity-75 transition">
                       <AvatarImage src={session.user?.image || undefined} />
                       <AvatarFallback translate="no" className="bg-sky-900 text-white notranslate">{avatarFallback}</AvatarFallback>
@@ -74,6 +81,7 @@ export function Header() {
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="z-[9999]">
+                  <DropdownMenuItem  onClick={() => setOpen(true)}>Profile</DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut}>Log Out</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -130,6 +138,7 @@ export function Header() {
         setIsRegistorModalOpen(false);
         setIsLoginModalOpen(true);
       }} />
+       <ProfileModal isOpen={open} onClose={() => setOpen(false)} />
     </>
   );
 }

@@ -44,10 +44,10 @@ const handler = NextAuth({
                     return user;
                 } catch (err) {
                     if (err instanceof Error && (err.message === "User not found" || err.message === "Invalid Password")) {
-                        throw err; 
+                        throw err;
                     }
                     console.error("Unexpected authorize error:", err);
-                    throw new Error("Something went wrong"); 
+                    throw new Error("Something went wrong");
                 }
             }
 
@@ -96,19 +96,39 @@ const handler = NextAuth({
             if (user) {
                 token.id = user.id;
                 token.email = user.email;
+                token.twoFactorEnabled = (user as any).twoFactorEnabled ?? false;
             }
             return token
         },
+
         async session({ session, token }) {
+            // if (token) {
+            //     await dbConnect();
+            //     const user = await User.findById(token.id);
+
+            //     session.user = {
+            //         name: user?.name || token.name,
+            //         email: user?.email || token.email,
+            //         image: user?.profilePhoto || token.picture,
+            //         twoFactorEnabled: user?.twoFactorEnabled ?? false, // ✅ use DB value
+            //     } as any;
+            // }
             if (token) {
+               await dbConnect();
+                  const enduser = await User.findOne({ email: token.email });
+
                 session.user = {
                     name: token.name,
                     email: token.email,
-                    image: token.picture
+                    image: token.picture,
+                    twoFactorEnabled: enduser?.twoFactorEnabled ?? false,
                 }
+
             }
-            return session
+            return session;
         },
+
+
 
 
     },

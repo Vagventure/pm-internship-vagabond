@@ -7,7 +7,7 @@ import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
 
 
 export async function POST(req: Request) {
-    const { name, email, password, confirmPassword } = await req.json()
+    const { name, email, password, confirmPassword, bio, t2f } = await req.json()
 
     const isValidEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -74,23 +74,26 @@ export async function POST(req: Request) {
                 password: hashedPassword,
                 isVerified: true,
                 verifyCode: verifyCode,
-                verifyCodeExpiry: verifyCodeExpiry
+                verifyCodeExpiry: verifyCodeExpiry,
+                bio:bio,
+                twoFactorEnabled:t2f
+
             })
 
             await newUser.save();
         }
 
-        const emailResponse = await sendVerificationEmail(
-            email,
-            verifyCode,
-        )
+        // const emailResponse = await sendVerificationEmail(
+        //     email,
+        //     verifyCode,
+        // )
 
-        if (!emailResponse) {
-            return Response.json({
-                success: false,
-                message: "Failed to send verification email"
-            }, { status: 400 })
-        }
+        // if (!emailResponse) {
+        //     return Response.json({
+        //         success: false,
+        //         message: "Failed to send verification email"
+        //     }, { status: 400 })
+        // }
 
         return NextResponse.json({
             success: true,

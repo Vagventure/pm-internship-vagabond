@@ -57,12 +57,12 @@ const PMInternshipEmail = ({ validationCode }:PMInternshipEmailModal) => {
             or contact our support team immediately.
           </p>
 
-          {/* Call to Action */}
+          {/* Call to Action
           <div style={ctaSection}>
             <a href="https://pminternship.mca.gov.in/login/" style={button}>
               Verify Now
             </a>
-          </div>
+          </div> */}
 
           {/* Important Info */}
           <div style={infoBox}>

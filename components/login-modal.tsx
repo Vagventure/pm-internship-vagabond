@@ -32,21 +32,20 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setPending(true)
-    console.log(userEmail, "-------", password)
+    // console.log(userEmail, "-------", password)
     const res = await signIn("credentials", {
       redirect: false,
       email: userEmail,
       password
     })
     if (res?.error) {
-      // show the specific error thrown from authorize()
       setError(res.error);
       toast.error(res.error);
       setPending(false);
     } else {
       toast.success("Login successful");
       onClose();
-      setError(""); // clear any previous error
+      setError(""); 
     }
 
   }
@@ -128,7 +127,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
         {/* Forgot password link */}
         <div className="mt-6 text-center">
-          <button className="text-gray-600 hover:text-gray-800 underline text-sm">Forgot / Reset Password</button>
+          <button onClick={()=> router.push('/reset-password')} className="text-gray-600 hover:text-gray-800 underline text-sm">Forgot / Reset Password</button>
         </div>
 
 
