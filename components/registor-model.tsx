@@ -63,14 +63,8 @@ export function RegistorModal({ isOpen, onClose, openLogin }: LoginModalProps) {
             console.log("Sign up success")
             toast.success(data.message)
             setPending(false)
-            // setShowOtp(true)
-            await signIn("credentials", {
-                email: form.email,
-                password: form.password,
-                redirect: false,
-                // callbackUrl: "/create-profile",
-            });
-            onClose();
+            setShowOtp(true)
+            // onClose();
 
         } else if (res.status === 400) {
             toast.error(data.message)
@@ -104,6 +98,12 @@ export function RegistorModal({ isOpen, onClose, openLogin }: LoginModalProps) {
         const data = await res.json();
         if (res.ok) {
             toast.success(data.message);
+             await signIn("credentials", {
+                email: form.email,
+                password: form.password,
+                redirect: false,
+                // callbackUrl: "/create-profile",
+            });
             onClose();
         } else if (res.status == 409) {
             toast.success(data.message);
@@ -120,7 +120,7 @@ export function RegistorModal({ isOpen, onClose, openLogin }: LoginModalProps) {
         const res = await fetch("/api/resendOtp", {
             method: "POST",
             headers: { "Content-Type": "application-json" },
-            body: JSON.stringify({ email: decodeURIComponent(form.email as string) }),
+            body: JSON.stringify({ email: decodeURIComponent(form.email as string), type:"AccountVerification" }),
         });
 
         const data = await res.json();

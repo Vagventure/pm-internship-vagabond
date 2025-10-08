@@ -51,9 +51,6 @@ export function Header() {
     router.push("/");
   };
 
-  const handleProfile = async ()=>{
-    window.location.href = "/profile"
-  }
 
   return (
     <>
@@ -66,9 +63,7 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-3">
-            {status === "loading" ? (
-              <Loader className="w-6 h-6 animate-spin text-orange-500" />
-            ) : session ? (
+           {session ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className="flex items-center gap-2 cursor-pointer">

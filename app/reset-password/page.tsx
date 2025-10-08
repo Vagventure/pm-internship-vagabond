@@ -13,7 +13,6 @@ const PasswordResetPage = () => {
     const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
     const [pending, setPending] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
     const router = useRouter();
 
@@ -41,7 +40,7 @@ const PasswordResetPage = () => {
         const res = await fetch("/api/resendOtp", {
             method: 'POST',
             headers: { "Content-Type": "application-json" },
-            body: JSON.stringify({ email })
+            body: JSON.stringify({ email, type: "VerifyIdentityEmail" })
         })
         const data = await res.json()
         if (res?.ok) {
@@ -119,7 +118,7 @@ const PasswordResetPage = () => {
         const res = await fetch("/api/resendOtp", {
             method: "POST",
             headers: { "Content-Type": "application-json" },
-            body: JSON.stringify({ email })
+            body: JSON.stringify({ email, type: "VerifyIdentityEmail" })
         })
 
         const data = await res.json()
@@ -320,13 +319,14 @@ const PasswordResetPage = () => {
                                 >
                                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </button>
+
                             </div>
 
                             {/* Confirm Password Field with Eye */}
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                                 <input
-                                    type={showConfirm ? "text" : "password"}
+                                    type={showPassword ? "text" : "password"}
                                     placeholder="Confirm password"
                                     value={confirmpass}
                                     onChange={(e) => setConfirmpass(e.target.value)}
@@ -335,11 +335,12 @@ const PasswordResetPage = () => {
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setShowConfirm(!showConfirm)}
+                                    onClick={() => setShowPassword(!showPassword)}
                                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                                 >
-                                    {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </button>
+
                             </div>
 
                             <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">

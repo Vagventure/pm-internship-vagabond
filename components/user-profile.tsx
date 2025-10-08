@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, ChangeEvent } from "react";
-import { User, Shield, Camera, Mail, X } from "lucide-react";
+import { User, Shield, Camera, Mail, X, Eye, EyeOff } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -28,6 +28,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     const [activeTab, setActiveTab] = useState<"account" | "security">("account");
     const [isSaving, setIsSaving] = useState(false);
     const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const [profileData, setProfileData] = useState<ProfileData>({
         username: "",
@@ -41,7 +42,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
         newPassword: "",
         confirmPassword: "",
     });
-    const { data: session , update} = useSession();
+    const { data: session, update } = useSession();
 
     useEffect(() => {
         if (session?.user) {
@@ -101,6 +102,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!session?.user?.email) return alert("User not logged in");
+
+        const confirmUpdate = window.confirm("Are you sure you want to update your password?");
+        if (!confirmUpdate) return; 
 
         const res = await fetch("/api/user/password-reset", {
             method: "POST",
@@ -280,30 +284,38 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                 <h3 className="text-base font-semibold text-gray-900 mb-3">
                                     Change password
                                 </h3>
+
                                 <form onSubmit={handleChangePassword} className="space-y-3">
-                                    {["currentPassword", "newPassword", "confirmPassword"].map(
-                                        (field) => (
+                                    {["currentPassword", "newPassword", "confirmPassword"].map((field) => {
+
+                                        return (
                                             <div key={field}>
                                                 <label className="block text-sm font-medium text-gray-700 mb-1 capitalize">
                                                     {field.replace(/([A-Z])/g, " $1")}
                                                 </label>
-                                                <input
-                                                    type="password"
-                                                    value={securityData[field as keyof SecurityData]}
-                                                    onChange={(e) =>
-                                                        handleSecurityChange(
-                                                            field as keyof SecurityData,
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                                                    placeholder={`Enter ${field
-                                                        .replace(/([A-Z])/g, " $1")
-                                                        .toLowerCase()}`}
-                                                />
+
+                                                <div className="relative">
+                                                    <input
+                                                        type={showPassword ? "text" : "password"}
+                                                        value={securityData[field as keyof SecurityData]}
+                                                        onChange={(e) =>
+                                                            handleSecurityChange(field as keyof SecurityData, e.target.value)
+                                                        }
+                                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all pr-10"
+                                                        placeholder={`Enter ${field.replace(/([A-Z])/g, " $1").toLowerCase()}`}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowPassword((prev) => !prev)}
+                                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                                    >
+                                                        {showPassword ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
+                                                    </button>
+                                                </div>
                                             </div>
-                                        )
-                                    )}
+                                        );
+                                    })}
+
                                     <button
                                         type="submit"
                                         disabled={isSaving}
@@ -331,9 +343,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                                     }`}
                                             >
                                                 <span
-                                                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${twoFactorEnabled
-                                                        ? "translate-x-6"
-                                                        : "translate-x-1"
+                                                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${twoFactorEnabled ? "translate-x-6" : "translate-x-1"
                                                         }`}
                                                 />
                                             </div>
@@ -351,6 +361,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                             </div>
                         </div>
                     )}
+
                 </div>
             </div>
         </div>

@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         const isMatch = await bcrypt.compare(currentPassword, user.password as string);
         if (!isMatch) {
             return NextResponse.json(
-                { message: "currentPasswordd is incorrect" },
+                { message: "Incorrect current password" },
                 { status: 400 }
             );
         }

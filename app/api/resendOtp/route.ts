@@ -5,7 +5,7 @@ import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
 
 
 export async function POST(req: Request) {
-    const { email } = await req.json()
+    const { email, type } = await req.json()
 
     try {
         await dbConnect();
@@ -46,6 +46,7 @@ export async function POST(req: Request) {
         const emailResponse = await sendVerificationEmail(
             email,
             existingUser?.verifyCode as string,
+            type
         )
 
         if (!emailResponse) {
